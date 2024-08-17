@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import UserDialog from "./userDialog";
+import GroupAddDialog from "./groupAddDialog";
 
 
 export default function GroupsPage() {
@@ -33,6 +34,7 @@ export default function GroupsPage() {
 
 
     const [open, setOpen] = React.useState(false);
+    const [openCreateGroup, setOpenCreateGroup] = React.useState(false);
 
     React.useEffect(() => {
         const setSessionAsync = async () => {
@@ -49,27 +51,23 @@ export default function GroupsPage() {
             return;
         }
 
-        await fetch("/api/get_user_groups", {
+        // Rewrite the above request as const repsonse 
+        const response = await fetch("/api/get_user_groups", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: username }),
-        })
-            .then(response => response.json())
-            .then(data => {
-                const groupList = data.groupList;
-                console.log("GROUP IDS:", groupList);
-                groupList.map(jsonObj => {
-                    console.log(jsonObj.name);
-                    console.log(jsonObj.users.split(", "));
-                    console.log(jsonObj.id);
-                });
-                setUsersList(groupList);
+        });
 
-            }).catch(error => {
-                console.error("Error fetching users array: ", error);
-            });
+        const data = await response.json();
+        const groupList = data.list;
+        groupList.map(jsonObj => {
+            // console.log(jsonObj.name);
+            // console.log(jsonObj.users.split(","));
+            // console.log(jsonObj.id);
+        });
+        setUsersList(groupList);
     }
 
     React.useEffect(() => {
@@ -120,6 +118,15 @@ export default function GroupsPage() {
         setOpen(true); 
     };
 
+    const createGroup = async () => {
+        setOpenCreateGroup(true);
+    }
+
+    function refreshDatabase() {
+        console.log("refreshing database");
+        fetchUsersList();
+    }
+
     return (
         <>
             <Paper
@@ -168,7 +175,7 @@ export default function GroupsPage() {
                     <ButtonGroup variant="contained"
                         sx={{ marginRight: 2 }} 
                         aria-label="contained primary button group">
-                        <Button variant="contained" onClick={addUserEvent}>Create Group</Button>
+                        <Button variant="contained" onClick={createGroup}>Create Group</Button>
                     </ButtonGroup>
 
                     <ButtonGroup variant="contained"
@@ -195,7 +202,7 @@ export default function GroupsPage() {
                         </TableHead>
                         <TableBody>
                             {usersList && usersList.map(jsonObj => (
-                                <TableRow key={jsonObj.name}>
+                                <TableRow key={jsonObj.id}>
                                     <TableCell sx={{ width: 'auto' }}>{jsonObj.name}</TableCell>
 
                                     <TableCell sx={{ width: 'fit-content' }}> {jsonObj.users.split(", ").map((user) => (
@@ -210,7 +217,8 @@ export default function GroupsPage() {
                 </TableContainer>
             </Paper>
 
-            <UserDialog open={open} setOpen={setOpen} /><UserDialog />
+            <UserDialog open={open} setOpen={setOpen} refreshDatabase={refreshDatabase}/><UserDialog />
+            <GroupAddDialog openCreateGroup={openCreateGroup} setOpenCreateGroup={setOpenCreateGroup} refreshDatabase={refreshDatabase}/><GroupAddDialog />
 
         </>
     );

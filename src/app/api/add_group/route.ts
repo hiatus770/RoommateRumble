@@ -7,6 +7,7 @@ import { neon } from "@neondatabase/serverless";
 export async function POST(request: Request){
     try { 
         const {name, users} = await request.json();  // Name of the group and users CSV string
+        console.log("CREATING DATABASE: ", {name, users});
 
         const sql = neon(process.env.DATABASE_URL as string); 
 
@@ -33,7 +34,7 @@ export async function POST(request: Request){
         console.log({ response2 });
     } catch (e) {
         console.log({ e }); 
-        return NextResponse.json({message: "Error!"}); // TODO: needs to be handled better
+        return NextResponse.json({message: "Error! 🤪"}); // TODO: needs to be handled better :zany: 
     }
 
     return NextResponse.json({message: "Success!"});

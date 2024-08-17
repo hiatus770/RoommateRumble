@@ -33,7 +33,7 @@ export default function Form() {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
 
-        console.log("EMAIL: " + formData.get("email")); 
+        console.log("USERNAME: " + formData.get("email")); 
         if (formData.get("email") === '' || formData.get("password") === ''){
             router.push("/error/EmailOrPasswordCannotBeEmpty")
             console.log("ERROR FOUND")
@@ -54,7 +54,7 @@ export default function Form() {
     const defaultTheme = createTheme();
 
     return (
-            <Container component="main" maxWidth="xs" sx={{bgcolor: '#f0f0f0', minHeight: '100vh'}}>
+            <Container component="main" maxWidth="xs" sx={{minHeight: '100vh'}}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -67,7 +67,7 @@ export default function Form() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5" color={'black'}>
-                        Register new user to Squash Portal
+                        Register new user to ChoreBoard
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}color={'black'}>
                         <Grid container spacing={2} color={'black'}>
@@ -77,7 +77,7 @@ export default function Form() {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
+                                    label="Username"
                                     name="email"
                                     autoComplete="email"
                                 />
@@ -103,6 +103,14 @@ export default function Form() {
                         >
                             Sign Up
                         </Button>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: "100%" }}>
+                                <Typography variant="body2" marginRight={1}>Have an account already?</Typography>
+                                <Link href="/login" variant="body2">
+                                    Login
+                                </Link>
+                            </div>
+
                     </Box>
                 </Box>
             </Container>
