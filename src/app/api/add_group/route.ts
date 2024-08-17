@@ -9,6 +9,8 @@ export async function POST(request: Request){
         const {name, users} = await request.json();  // Name of the group and users CSV string
         console.log("CREATING DATABASE: ", {name, users});
 
+
+
         const sql = neon(process.env.DATABASE_URL as string); 
 
         const response = await sql `

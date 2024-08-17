@@ -34,6 +34,10 @@ export default function UserDialog({ open, setOpen, refreshDatabase }: UserDialo
             });
 
             const data = await response.json();
+            if (data.list.length === 0) {
+                console.log("NO GROUPS FOUND");
+                return;
+            }
             console.log("GROUP NAME: " + data.list[0].name);
             setGroupName(data.list[0].name);
         };

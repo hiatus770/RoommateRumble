@@ -32,7 +32,7 @@ export default function GroupsPage() {
     const [usersList, setUsersList] = React.useState(null);
     const [username, setUsername] = React.useState(null);
 
-
+    const [isInAGroup, setIsInAGroup] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [openCreateGroup, setOpenCreateGroup] = React.useState(false);
 
@@ -68,6 +68,11 @@ export default function GroupsPage() {
             // console.log(jsonObj.id);
         });
         setUsersList(groupList);
+
+        console.log("LENGTH " + groupList.length);
+        if (groupList.length > 0) {
+            setIsInAGroup(true);
+        }
     }
 
     React.useEffect(() => {
@@ -115,11 +120,28 @@ export default function GroupsPage() {
     };
 
     const addUserEvent = async () => {
-        setOpen(true); 
+        setOpen(true);
     };
 
     const createGroup = async () => {
         setOpenCreateGroup(true);
+    }
+
+    const leaveGroup = async () => {
+        const id = usersList[0].id;
+        console.log("LEAVING GROUP WITH ID: " + id + " AS USER " + username);
+
+
+        await fetch("/api/leave_group", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: username, groupId: id }),
+        })
+        
+        setIsInAGroup(false);
+        refreshDatabase();
     }
 
     function refreshDatabase() {
@@ -166,23 +188,29 @@ export default function GroupsPage() {
                     zIndex: 2,
                     backgroundColor: "background.default"
                 }}>
+                    {isInAGroup && (
                     <ButtonGroup variant="contained"
-                        sx={{ marginRight: 2 }} 
+                        sx={{ marginRight: 2 }}
                         aria-label="contained primary button group">
-                        <Button variant="contained" onClick={addUserEvent}>Add User</Button>
+                        <Button variant="contained" onClick={addUserEvent}>Add to your group</Button>
                     </ButtonGroup>
+                    )}
 
-                    <ButtonGroup variant="contained"
-                        sx={{ marginRight: 2 }} 
-                        aria-label="contained primary button group">
-                        <Button variant="contained" onClick={createGroup}>Create Group</Button>
-                    </ButtonGroup>
+                    {!isInAGroup && (
+                        <ButtonGroup variant="contained"
+                            sx={{ marginRight: 2 }}
+                            aria-label="contained primary button group">
+                            <Button variant="contained" onClick={createGroup}>Create Group</Button>
+                        </ButtonGroup>
+                    )}
 
+                    {isInAGroup && (
                     <ButtonGroup variant="contained"
-                        sx={{ marginRight: 2 }} 
+                        sx={{ marginRight: 2 }}
                         aria-label="contained primary button group">
-                        <Button variant="contained" onClick={addUserEvent}>Join Group</Button>
+                        <Button variant="contained" onClick={leaveGroup}>Leave Group</Button>
                     </ButtonGroup>
+                    )}
                 </Paper>
                 <TableContainer elevation={3} component={Paper}
                     sx={{
@@ -217,9 +245,8 @@ export default function GroupsPage() {
                 </TableContainer>
             </Paper>
 
-            <UserDialog open={open} setOpen={setOpen} refreshDatabase={refreshDatabase}/><UserDialog />
-            <GroupAddDialog openCreateGroup={openCreateGroup} setOpenCreateGroup={setOpenCreateGroup} refreshDatabase={refreshDatabase}/><GroupAddDialog />
-
+            <UserDialog open={open} setOpen={setOpen} refreshDatabase={refreshDatabase} /><UserDialog />
+            <GroupAddDialog openCreateGroup={openCreateGroup} setOpenCreateGroup={setOpenCreateGroup} refreshDatabase={refreshDatabase} /><GroupAddDialog />
         </>
     );
 }

@@ -21,7 +21,8 @@ export default function GroupAddDialog({ openCreateGroup, setOpenCreateGroup, re
             setErrorMessage("Group name cannot be empty");
             return;
         }
-
+    
+        
         const session = await getSession(); 
         const username = session?.user?.email; 
 
@@ -32,8 +33,11 @@ export default function GroupAddDialog({ openCreateGroup, setOpenCreateGroup, re
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: groupName, username: username }),
+            body: JSON.stringify({ name: groupName, users: username }),
         });
+
+        const data = await response.json();
+        
 
         if (!response.ok) {
             setUserError(true);
