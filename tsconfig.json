@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(signins)/login/form.tsx", "src/app/(pages)/groups/page.jsx", "src/app/(pages)/groups/groupAddDialog.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/(signins)/login/form.tsx", "src/app/(pages)/groups/page.tsx", "src/app/(pages)/groups/groupAddDialog.tsx"],
   "exclude": ["node_modules"]
 }
