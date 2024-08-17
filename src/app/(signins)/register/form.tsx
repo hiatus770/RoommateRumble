@@ -54,25 +54,27 @@ export default function Form() {
     const defaultTheme = createTheme();
 
     return (
-            <Container component="main" maxWidth="xs" sx={{minHeight: '100vh'}}>
+            <Container component="main" maxWidth="sm" sx={{minHeight: '100vh', backgroundColor: "background.paper",}}>
                 <CssBaseline />
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
+                        justifyContent: "center",
+                        minHeight: '90vh'
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <Typography component="h1" variant="h5" color={'black'}>
-                        Register new user to ChoreBoard
+                    <Typography component="h1" variant="h5">
+                        Register new user to Roommate Rumble
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}color={'black'}>
-                        <Grid container spacing={2} color={'black'}>
+                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
 
-                            <Grid item xs={12} color={'black'}>
+                            <Grid item xs={12}>
                                 <TextField
                                     required
                                     fullWidth
@@ -82,7 +84,7 @@ export default function Form() {
                                     autoComplete="email"
                                 />
                             </Grid>
-                            <Grid item xs={12} color={'black'}>
+                            <Grid item xs={12}>
                                 <TextField 
                                     required
                                     fullWidth

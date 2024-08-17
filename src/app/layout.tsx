@@ -11,7 +11,7 @@ import {nordDark, nordLight} from './Themes';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ChoreScore!"
+  title: "Roommate Rumble"
 };
 
 export default function RootLayout({

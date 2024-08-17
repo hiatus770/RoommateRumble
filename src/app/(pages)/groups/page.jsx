@@ -29,12 +29,13 @@ import GroupAddDialog from "./groupAddDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
+import {useRouter} from 'next/navigation'
 
 export default function GroupsPage() {
     const [message, setMessage] = React.useState("");
     const [usersList, setUsersList] = React.useState(null);
     const [username, setUsername] = React.useState(null);
-
+    const router = useRouter();
     const [isInAGroup, setIsInAGroup] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [openCreateGroup, setOpenCreateGroup] = React.useState(false);
@@ -157,6 +158,12 @@ export default function GroupsPage() {
         fetchUsersList();
     }
 
+    function openGroupPage(id) {
+        console.log("OPENING PAGE:", id);
+
+        router.push(`/groups/manage/${id}`);
+    }
+
     return (
         <>
             <Paper
@@ -233,10 +240,10 @@ export default function GroupsPage() {
                                         <TableCell sx={{ width: 'auto', display: 'flex', justifyContent: "flex-end" }}>
                                             {isLeaving ? (
                                                     <Button color="error" variant="outlined" sx={{fontWeight: "medium"}} onClick={() => leaveGroup(jsonObj.id)}>Leave</Button>
-                                                ) : (
-                                                    <Button onClick={() => openGroup(jsonObj.id)}>View</Button>
+                                                ) : (  
+                                                    <Button onClick={()=> openGroupPage(jsonObj.id)}>View</Button>
                                                 )
-                                            }
+                                            } 
                                         </TableCell>
                                     </TableRow>
                                 ))}
