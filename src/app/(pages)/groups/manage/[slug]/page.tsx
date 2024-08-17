@@ -1,4 +1,5 @@
 import React from 'react';
+import ClientPage from './clientpage'
 
 interface GroupViewerPageProps {
   params: {
@@ -14,10 +15,13 @@ const GroupViewerPage = ({ params: { slug } }: GroupViewerPageProps) => {
     const id = decodeURI(slug); 
     console.log("ID FROM SLUG URL: ", id);
 
-  return (
-    <p>
+    /*
+        <p>
       Group ID: <strong>{decodeURI(slug)}</strong>  
     </p>
+    */
+  return (
+    <ClientPage groupId={id} />
   );
 };
 

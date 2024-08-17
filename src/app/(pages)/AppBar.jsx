@@ -100,7 +100,7 @@ export default function ResponsiveAppBar() {
                         textDecoration: 'none',
                     }}
                 >
-                    CHOREBOARD
+                    ROOMMATE RUMBLE
                 </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
@@ -165,7 +165,7 @@ export default function ResponsiveAppBar() {
                         textDecoration: 'none',
                     }}
                 >
-                    CHORESCORE
+                    ROOMMATE RUMBLE
                 </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>

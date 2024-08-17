@@ -16,7 +16,12 @@ export default async function redirectOnType() {
 
     const user = response[0]; 
 
-    console.log(JSON.stringify(response[0])); 
+    console.log("RESPONSE: " + JSON.stringify(response)); 
+
+    if (response.length === 0){
+        return null;    
+    }
+    
 
     const email = user.email; 
     const type = user.type; 

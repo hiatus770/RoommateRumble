@@ -157,16 +157,6 @@ export default function Form() {
                                 }
                             />
                             
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        value="remember"
-                                        color="primary"
-                                    />
-                                }
-                                label="Remember me"
-                            />
-                            
                             {pendingLogin ? (
                                 <Button
                                     type="submit"
