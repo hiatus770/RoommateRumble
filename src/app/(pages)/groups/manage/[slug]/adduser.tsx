@@ -52,14 +52,14 @@ export default function AddUser({groupId} : AddUserProps) {
                 <TextField
                     {...params}
                     variant="outlined"
-                    label="Group usernames"
-                    placeholder="Enter usernames"
+                    label="Enter usernames here"
+                    placeholder="Enter username here"
                     size="small"
                 />
             )}
             sx={{ margin: 1 }}
         />
-        <Button onClick={submitButton}>Submit</Button>
+        <Button onClick={submitButton}>Add</Button>
         </>
     );
 }

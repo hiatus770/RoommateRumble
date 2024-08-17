@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         const command = `INSERT INTO table_${id} (name, description, date, status, points, image) VALUES ($1, $2, $3, $4, $5, $6)`;
         const values = [choreObj.name, choreObj.description, dateUnix, choreObj.status, choreObj.points, choreObj.image];
         const response = await sql(command, values);
-        return NextResponse.json(response);
+        return NextResponse.json({response});
     }
     catch (error) {
         return NextResponse.error(error);

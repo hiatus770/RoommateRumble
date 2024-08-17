@@ -81,7 +81,7 @@ export default function ResponsiveAppBar() {
         <AppBar position="static" elevation={0} sx={{backgroundColor: 'appbar.background'}}>
             <Toolbar disableGutters>
                 <Avatar
-                    src={`${process.env.PUBLIC_URL}/stldblogo_${palette.mode}.webp`}
+                    src={`/logo.png`}
                     sx={{display: {xs: 'none', md: 'flex'}, ml: 2, pointerEvents: 'none'}}
                     variant="square"
                 />
@@ -145,7 +145,7 @@ export default function ResponsiveAppBar() {
                 </Box>
 
                 <Avatar
-                    src={`${process.env.PUBLIC_URL}/stldblogo_${palette.mode}.webp`}
+                    src={`/logo.png`}
                     sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}
                     variant="square"
                 />

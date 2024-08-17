@@ -64,9 +64,109 @@ const ClientPage = ({ groupId }) => {
     const handleClose = () => {
         setOpen(false);
     };
-    
+
     const deleteChore = (id) => {
         console.log("Delete Chore: ", id);
+
+    }
+
+    const startChore = (choreObj) => {
+        console.log("Start Chore: ", choreObj.id);
+        // Update chore status to "In Progress"
+        /*
+        // localhost:3000/api/update_chore
+
+// Receives a group id and chore object
+export async function POST(request: Request) {
+    try { 
+        const { id, choreObj } = await request.json();
+        */
+
+        choreObj.status = "In Progress";
+        fetch("/api/update_chore", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: groupId, choreObj: choreObj }),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            console.log("Data: ", data);
+            fetchChores();
+        }).catch((error) => {
+            console.error("Error:", error);
+        });
+    }
+
+    const completeChore = (choreObj) => {
+        // we have group id (groupId)
+        // get username
+
+        getSession().then((session) => {
+            const username = session?.user?.email;
+
+            console.log("Complete Chore: ", choreObj.id);
+            // Update chore status to "Complete"
+            choreObj.status = "Complete";
+            fetch("/api/update_chore", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ id: groupId, choreObj: choreObj }),
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                console.log("Data: ", data);
+                fetchChores();
+            }).catch((error) => {
+                console.error("Error:", error);
+            });
+
+            // Update user points maybe .then easier
+
+            fetch('/api/get_scores', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    groupId: groupId,
+                })
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+
+                const scores = JSON.parse(data.scores);
+                // Find the user in the scores json object
+                for (let i = 0; i < scores.length; i++) {
+                    if (scores[i].username === username) {
+                        scores[i].points += choreObj.points;
+                        break;
+                    }
+                }
+
+                fetch('/api/set_scores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        groupId: groupId,
+                        scores: JSON.stringify(scores),
+                    })
+                }).then((response) => {
+                    return response.json();
+                }).then((data) => {
+                    console.log('updated score data for group id:', groupId);
+                }).catch((error) => {
+                    console.error('Update score error :', error);
+                });
+            }).catch((error) => {
+                console.error('Error:', error);
+            });
+        });
 
     }
 
@@ -77,7 +177,7 @@ const ClientPage = ({ groupId }) => {
         console.log("Group Description: ", groupDescription);
         const groupPoints = document.getElementById("chorePoints").value;
         console.log("Group Points: ", groupPoints);
-//        const response = await sql`INSERT INTO table_${id} (name, description, date, status, points, image) VALUES (${choreObj.name}, ${choreObj.description}, ${dateUnix}, ${choreObj.status}, ${choreObj.points}, ${choreObj.image})`;
+        //        const response = await sql`INSERT INTO table_${id} (name, description, date, status, points, image) VALUES (${choreObj.name}, ${choreObj.description}, ${dateUnix}, ${choreObj.status}, ${choreObj.points}, ${choreObj.image})`;
         /*
         
 // localhost:3000/api/add_chore
@@ -87,7 +187,7 @@ export async function POST(request: Request){
     try { 
         const { id, choreObj } = await request.json();
         */
-        
+
         const newChore = {
             name: groupName,
             description: groupDescription,
@@ -186,12 +286,12 @@ export async function POST(request: Request) {
                                         m="1.2vh"
                                         ml="0.6vh"
                                         mt="0.6vh"
-                                        >
-                                        <AddChoreDialog 
-                                            open={open} 
-                                            handleClose={handleClose} 
-                                            handleSubmit={handleSubmit} 
-                                            pendingAdd={pendingAdd} 
+                                    >
+                                        <AddChoreDialog
+                                            open={open}
+                                            handleClose={handleClose}
+                                            handleSubmit={handleSubmit}
+                                            pendingAdd={pendingAdd}
                                         />
                                         <Paper elevation={1} sx={{ borderRadius: '1.2vh', bottom: '2.4vh', left: `calc(${sideBarWidth}px + 1.2vh)`, padding: '1.2vh', position: 'fixed', width: `calc(100vw - ${sideBarWidth}px - 3*1.2vh)`, zIndex: 2, backgroundColor: "background.default", display: 'flex', justifyContent: 'space-between' }}>
                                             {
@@ -229,11 +329,17 @@ export async function POST(request: Request) {
                                                         newArr.sort((a, b) => {
                                                             return a[event.target.value] > b[event.target.value] ? 1 : -1;
                                                         });
+
+                                                        if (event.target.value === "date") {
+                                                            // reverse
+                                                            newArr.reverse();
+                                                        }
+
                                                         setChoreArr(newArr);
                                                     }}
                                                 >
                                                     <MenuItem value="name">Name</MenuItem>
-                                                    <MenuItem value="id">Date Added</MenuItem>
+                                                    <MenuItem value="date">Date Added</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </Paper>
@@ -276,13 +382,13 @@ export async function POST(request: Request) {
                                                     </CardContent>
                                                     <CardActions sx={{ padding: "2%" }}>
                                                         {chore.status === "Incomplete" ? (
-                                                            <Button size="small" sx={{ fontWeight: "bold" }}>
+                                                            <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => startChore(chore)}>
                                                                 Start
                                                             </Button>
                                                         ) : (
 
                                                             chore.status === "In Progress" ? (
-                                                                <Button size="small" sx={{ fontWeight: "bold" }}>
+                                                                <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => completeChore(chore)}>
                                                                     Mark as complete
                                                                 </Button>
                                                             ) : (
@@ -294,11 +400,11 @@ export async function POST(request: Request) {
                                                         )}
                                                         {
 
-                                                            deleting === 1 && 
+                                                            deleting === 1 &&
                                                             <Button onClick={() => deleteChore(chore.id)} color="error" size="small" sx={{ fontWeight: "bold" }}>
                                                                 Delete
                                                             </Button>
-                                                        }   
+                                                        }
 
                                                     </CardActions>
 
@@ -311,11 +417,11 @@ export async function POST(request: Request) {
                         )}
 
                         {currentTabIndex === 1 && (
-                            <Box margin="1.2vh"> <Leaderboard groupId={groupId}/> </Box> 
+                            <Box margin="1.2vh"> <Leaderboard groupId={groupId} /> </Box>
                         )}
 
                         {currentTabIndex === 2 &&
-                            <Box margin="1.2vh"> <AddUser groupId={groupId}/> </Box> 
+                            <Box margin="1.2vh"> <AddUser groupId={groupId} /> </Box>
 
                         }
                     </Paper>

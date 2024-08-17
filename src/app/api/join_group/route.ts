@@ -7,7 +7,7 @@ import { neon } from "@neondatabase/serverless";
 export async function POST(request: Request) {
     const {username, groupId} = await request.json();
     try {
-        console.log("USERNAME", username);
+        console.log("JOINING USER TO GROUP ", username, groupId);
         const sql = neon(process.env.DATABASE_URL as string);
         // Get the groups users column
         const response = await sql`SELECT * FROM groups WHERE id = ${groupId}`;
@@ -19,6 +19,23 @@ export async function POST(request: Request) {
         usersSet.add(username);
         // Update the users column
         const newUsersCSV = Array.from(usersSet).join(",");
+
+        const scores = row.scores; 
+        const scoreJson = JSON.parse(scores);
+
+        if (!scoreJson[username]) {
+            scoreJson[username] = 0;
+        }
+
+        console.log("SCORES", scoreJson);
+
+        // Iterate through the scores json and add the new user
+        for (let key in scoreJson) {
+            console.log ("USERNAME " + key + " SCORE " + scoreJson[key]);
+        }
+
+        await sql`UPDATE groups SET scores = ${JSON.stringify(scoreJson)} WHERE id = ${groupId}`;
+
         await sql`UPDATE groups SET users = ${newUsersCSV} WHERE id = ${groupId}`;
     } catch (e) {
         console.log({ e }); 
