@@ -311,11 +311,11 @@ export async function POST(request: Request) {
                         )}
 
                         {currentTabIndex === 1 && (
-                            <Box margin="1.2vh"> <Leaderboard/> </Box> 
+                            <Box margin="1.2vh"> <Leaderboard groupId={groupId}/> </Box> 
                         )}
 
                         {currentTabIndex === 2 &&
-                            <Box margin="1.2vh"> <AddUser/> </Box> 
+                            <Box margin="1.2vh"> <AddUser groupId={groupId}/> </Box> 
 
                         }
                     </Paper>

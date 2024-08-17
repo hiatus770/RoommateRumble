@@ -8,13 +8,16 @@ import { neon } from "@neondatabase/serverless";
 export async function POST(request: Request) {
     const {groupId} = await request.json();
     try {
-        console.log("USERNAME", username);
         const sql = neon(process.env.DATABASE_URL as string);
-        // Get the user 
-        const response = await sql 
+        
+        const command = `SELECT * FROM groups where id = ${groupId}`;
+        const response = await sql(command);
+        console.log(JSON.stringify(response)); 
 
+        // Now iterate get the column calles "scores" and return it as a response
+        const scores = response[0].scores;
 
-
+        return NextResponse.json({response});
     } catch (e) {
         console.log({ e }); 
         return NextResponse.json({error: "Internal server error"}, {status: 500});
