@@ -12,6 +12,7 @@ import {
     DialogTitle,
     Fab,
     InputLabel,
+    LinearProgress,
     Paper,
     Select,
     Table,
@@ -25,7 +26,9 @@ import {
 import React from "react";
 import UserDialog from "./userDialog";
 import GroupAddDialog from "./groupAddDialog";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from '@mui/icons-material/Add';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function GroupsPage() {
     const [message, setMessage] = React.useState("");
@@ -35,6 +38,7 @@ export default function GroupsPage() {
     const [isInAGroup, setIsInAGroup] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [openCreateGroup, setOpenCreateGroup] = React.useState(false);
+    const [isLeaving, setIsLeaving] = React.useState(false);
 
     React.useEffect(() => {
         const setSessionAsync = async () => {
@@ -76,13 +80,14 @@ export default function GroupsPage() {
     }
 
     React.useEffect(() => {
-        if (username) {
-            fetchUsersList();
+        if (!username) {  // No user logged in
+            return;
         }
+        fetchUsersList();
     }, [username]);
 
-    const addGroup = async () => {
-        await fetch("/api/add_group", {
+    const addGroup = () => {
+        fetch("/api/add_group", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -101,8 +106,8 @@ export default function GroupsPage() {
             });
     };
 
-    const getIdTest = async () => {
-        await fetch("/api/groups", {
+    const getIdTest = () => {
+        fetch("/api/groups", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -119,29 +124,32 @@ export default function GroupsPage() {
             });
     };
 
-    const addUserEvent = async () => {
+    const addUserEvent = () => {
         setOpen(true);
     };
 
-    const createGroup = async () => {
+    const createGroup = () => {
         setOpenCreateGroup(true);
     }
 
-    const leaveGroup = async () => {
-        const id = usersList[0].id;
+    const leaveGroup = (id) => {
         console.log("LEAVING GROUP WITH ID: " + id + " AS USER " + username);
-
-
-        await fetch("/api/leave_group", {
+        fetch("/api/leave_group", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ username: username, groupId: id }),
-        })
-        
-        setIsInAGroup(false);
-        refreshDatabase();
+        }).then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                refreshDatabase();  // Refresh the database
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            }).then(() => {
+                setIsLeaving(false); // Remove all leaving buttons
+            });
     }
 
     function refreshDatabase() {
@@ -165,7 +173,24 @@ export default function GroupsPage() {
                     display: "flex",
                     justifyContent: "space-between",
                 }}
-            ></Paper>
+            >
+                {
+                    <ButtonGroup variant="contained"
+                        aria-label="contained primary button group">
+                        <Button variant="contained" onClick={createGroup}>Create Group</Button>
+                        {
+                            isLeaving ? (
+                                <Button onClick={()=>{setIsLeaving(false)}} startIcon={<CancelIcon/>}
+                                        variant="contained">
+                                    Cancel
+                                </Button>
+                            ) : (
+                                <Button variant = "contained" onClick = {()=>{setIsLeaving(true)}}>Leave a group</Button>
+                            )   
+                        }
+                        </ButtonGroup>
+                    }
+            </Paper>
 
             <Paper
                 elevation={0}
@@ -178,74 +203,50 @@ export default function GroupsPage() {
                     backgroundColor: "background.background",
                 }}
             >
-                <Paper elevation={1} sx={{
-                    borderRadius: '1.2vh',
-                    bottom: '2.4vh',
-                    left: '2.4vh',
-                    padding: '1.2vh',
-                    position: 'fixed',
-                    width: `calc(100vw - 2*2.4vh)`,
-                    zIndex: 2,
-                    backgroundColor: "background.default"
-                }}>
-                    {isInAGroup && (
-                    <ButtonGroup variant="contained"
-                        sx={{ marginRight: 2 }}
-                        aria-label="contained primary button group">
-                        <Button variant="contained" onClick={addUserEvent}>Add to your group</Button>
-                    </ButtonGroup>
-                    )}
-
-                    {!isInAGroup && (
-                        <ButtonGroup variant="contained"
-                            sx={{ marginRight: 2 }}
-                            aria-label="contained primary button group">
-                            <Button variant="contained" onClick={createGroup}>Create Group</Button>
-                        </ButtonGroup>
-                    )}
-
-                    {isInAGroup && (
-                    <ButtonGroup variant="contained"
-                        sx={{ marginRight: 2 }}
-                        aria-label="contained primary button group">
-                        <Button variant="contained" onClick={leaveGroup}>Leave Group</Button>
-                    </ButtonGroup>
-                    )}
-                </Paper>
-                <TableContainer elevation={3} component={Paper}
-                    sx={{
-                        borderRadius: '1.2vh',
-                        bgcolor: 'background.background',
-                        margin: '1.2vh',
-                        width: `calc(100vw - 2*2.4vh)`,
-                        marginBottom: '8.8vh'
-                    }}>
-                    <Table sx={{}} aria-label="simple table">
-                        <TableHead sx={{ bgcolor: 'background.paper' }}>
-                            <TableRow>
-                                <TableCell sx={{ width: 'auto' }}>Name</TableCell>
-                                <TableCell sx={{ width: 'fit-content' }}>Members</TableCell>
-                                <TableCell sx={{ width: 'auto' }}></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {usersList && usersList.map(jsonObj => (
-                                <TableRow key={jsonObj.id}>
-                                    <TableCell sx={{ width: 'auto' }}>{jsonObj.name}</TableCell>
-
-                                    <TableCell sx={{ width: 'fit-content' }}> {jsonObj.users.split(", ").map((user) => (
-                                        <Typography key={user}>{user}</Typography>
-                                    ))}
-                                    </TableCell>
-                                    <TableCell sx={{ width: 'auto' }}>{jsonObj.id}</TableCell>
+                {
+                    (usersList === null) ? <LinearProgress /> : (
+                    <TableContainer elevation={3} component={Paper}
+                        sx={{
+                            borderRadius: '1.2vh',
+                            bgcolor: 'background.background',
+                            margin: '1.2vh',
+                            width: `calc(100vw - 2*2.4vh)`,
+                            marginBottom: '8.8vh'
+                        }}>
+                        <Table stickyHeader sx={{}} aria-label="simple table">
+                            <TableHead sx={{ bgcolor: 'background.paper' }}>
+                                <TableRow>
+                                    <TableCell sx={{ width: 'auto' }}>Name</TableCell>
+                                    <TableCell sx={{ width: 'fit-content' }}>Members</TableCell>
+                                    <TableCell sx={ {width: 'auto' }}></TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {usersList && usersList.map(jsonObj => (
+                                    <TableRow key={jsonObj.id}>
+                                        <TableCell sx={{ width: 'auto' }}>{jsonObj.name}</TableCell>
+
+                                        <TableCell sx={{ width: 'fit-content' }}> {jsonObj.users.split(", ").map((user) => (
+                                            <Typography key={user}>{user}</Typography>
+                                        ))}
+                                        </TableCell>
+                                        <TableCell sx={{ width: 'auto', display: 'flex', justifyContent: "flex-end" }}>
+                                            {isLeaving ? (
+                                                    <Button color="error" variant="outlined" sx={{fontWeight: "medium"}} onClick={() => leaveGroup(jsonObj.id)}>Leave</Button>
+                                                ) : (
+                                                    <Button onClick={() => openGroup(jsonObj.id)}>View</Button>
+                                                )
+                                            }
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    )
+                }
             </Paper>
 
-            <UserDialog open={open} setOpen={setOpen} refreshDatabase={refreshDatabase} /><UserDialog />
             <GroupAddDialog openCreateGroup={openCreateGroup} setOpenCreateGroup={setOpenCreateGroup} refreshDatabase={refreshDatabase} /><GroupAddDialog />
         </>
     );
