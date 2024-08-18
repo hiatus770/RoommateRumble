@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
         // Reset leaderboard
         // Get the groups users column
-        const response = await sql`SELECT * FROM groups WHERE id = ${groupId}`;
+        const response = await sql`SELECT * FROM groups WHERE id = ${id}`;
         const row = response[0];
         const usersCSV = row.users || "";
         // Create a set from the users column
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         for (let user of array) {
             scoreJson[user] = 0;
         }
-        const response2 = await sql`UPDATE groups SET scores = ${JSON.stringify(scoreJson)} WHERE id = ${groupId}`;
+        const response2 = await sql`UPDATE groups SET scores = ${JSON.stringify(scoreJson)} WHERE id = ${id}`;
         console.log(response2);
         return NextResponse.json({success: true}, {status: 200});
     }

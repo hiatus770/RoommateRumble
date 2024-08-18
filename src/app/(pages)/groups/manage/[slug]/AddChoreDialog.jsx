@@ -53,7 +53,7 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
                 variant="standard"
             />
             <Typography
-            
+
             >
                 Upload A Photo of the Chore
             </Typography>
@@ -67,7 +67,7 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
             </DialogActions>
         ) : (
             <DialogActions>
-                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={handleClose} color="primary" variant="contained">Cancel</Button>
                 <Button onClick={() => handleSubmit(selectedFile)}>Add Chore</Button>
             </DialogActions>
         )}

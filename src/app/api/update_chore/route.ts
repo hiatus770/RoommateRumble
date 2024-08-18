@@ -22,6 +22,6 @@ export async function POST(request: Request) {
     }
     catch (error) {
         console.log("CHORE UPDATE ERROR: " + error);
-        return NextResponse.error(error);
+        return NextResponse.error();
     }
 }
