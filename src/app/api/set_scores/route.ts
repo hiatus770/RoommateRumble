@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         const response = await sql`SELECT * FROM groups WHERE id = ${groupId}`;
         const row = response[0];
         
-        await sql`UPDATE groups SET scores = ${newScores} WHERE id = ${groupId}`;
+        await sql`UPDATE groups SET scores = ${scores} WHERE id = ${groupId}`;
     } catch (e) {
         console.log({ e }); 
         return NextResponse.json({error: "Internal server error"}, {status: 500});

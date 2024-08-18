@@ -28,8 +28,13 @@ import UserDialog from "./userDialog";
 import GroupAddDialog from "./groupAddDialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from '@mui/icons-material/Add';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {useRouter} from 'next/navigation'
+import TextField from '@mui/material/TextField';
+import Chip from '@mui/material/Chip';
+//import CustomChip from './manage/[slug]/CustomChip';
 
 export default function GroupsPage() {
     const [message, setMessage] = React.useState("");
@@ -184,7 +189,7 @@ export default function GroupsPage() {
                 {
                     <ButtonGroup variant="contained"
                         aria-label="contained primary button group">
-                        <Button variant="contained" onClick={createGroup}>Create Group</Button>
+                        <Button variant="contained" onClick={createGroup} startIcon={<AddBoxIcon />}>Create Group</Button>
                         {
                             isLeaving ? (
                                 <Button onClick={()=>{setIsLeaving(false)}} startIcon={<CancelIcon/>}
@@ -192,7 +197,7 @@ export default function GroupsPage() {
                                     Cancel
                                 </Button>
                             ) : (
-                                <Button variant = "contained" onClick = {()=>{setIsLeaving(true)}}>Leave a group</Button>
+                                <Button variant = "contained" onClick = {()=>{setIsLeaving(true)}} startIcon={<ExitToAppIcon />}>Leave a group</Button>
                             )   
                         }
                         </ButtonGroup>
@@ -233,9 +238,17 @@ export default function GroupsPage() {
                                     <TableRow key={jsonObj.id}>
                                         <TableCell sx={{ width: 'auto' }}>{jsonObj.name}</TableCell>
 
-                                        <TableCell sx={{ width: 'fit-content' }}> {jsonObj.users.split(", ").map((user) => (
-                                            <Typography key={user}>{user}</Typography>
-                                        ))}
+                                        <TableCell sx={{ width: 'fit-content' }}>
+                                            {
+                                                jsonObj.users.split(",").map((user) => (
+                                                    // chip
+                                                    <Chip
+                                                        label={user} sx={{borderRadius: "1.5", marginLeft: "1", marginRight: "1"} }
+                                                        key={user}
+                                                    />
+                                                ))
+                                           }
+                                            
                                         </TableCell>
                                         <TableCell sx={{ width: 'auto', display: 'flex', justifyContent: "flex-end" }}>
                                             {isLeaving ? (

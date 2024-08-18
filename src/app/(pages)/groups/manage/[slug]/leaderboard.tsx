@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import LinearProgress from "@mui/material/LinearProgress";
 
 interface LeaderboardProps {
     groupId: string;
@@ -56,23 +57,26 @@ export default function Leaderboard({ groupId }: LeaderboardProps) {
     }, []);
 
     return (
-        <TableContainer component={Paper}>
-            <Table stickyHeader sx={{}} aria-label="simple table">
-                <TableHead sx={{ bgcolor: 'background.paper' }}>
-                    <TableRow>
-                        <TableCell sx={{ width: 'auto' }}>Username</TableCell>
-                        <TableCell sx={{ width: 'fit-content' }}>Points</TableCell>
+            (leaderboardList.length === 0 ? <LinearProgress /> :
+                (
+        < TableContainer component = { Paper } >
+        <Table stickyHeader sx={{}} aria-label="simple table">
+            <TableHead sx={{ bgcolor: 'background.paper' }}>
+                <TableRow>
+                    <TableCell sx={{ width: 'auto' }}>Username</TableCell>
+                    <TableCell sx={{ width: 'fit-content' }}>Points</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {leaderboardList.map((pair) => (
+                    <TableRow key={pair.username + pair.score}>
+                        <TableCell sx={{ width: 'auto' }}>{pair.username}</TableCell>
+                        <TableCell sx={{ width: 'fit-content' }}>{pair.score}</TableCell>
                     </TableRow>
-                </TableHead>
-                <TableBody>
-                    {leaderboardList.map((pair) => (
-                        <TableRow key={pair.username + pair.score}>
-                            <TableCell sx={{ width: 'auto' }}>{pair.username}</TableCell>
-                            <TableCell sx={{ width: 'fit-content' }}>{pair.score}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                ))}
+            </TableBody>
+        </Table>
+                    </TableContainer >
+            ))
     );
 }

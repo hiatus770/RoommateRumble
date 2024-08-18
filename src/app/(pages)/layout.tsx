@@ -10,7 +10,6 @@ import {nordDark, nordLight} from '../Themes';
 import redirectOnType from "@/app/(signins)/login/redirectontype";
 import { redirect } from "next/navigation";
 import { usePathname } from 'next/navigation';
-import getURL from './getUrl';
 
 
 interface RootLayoutProps {

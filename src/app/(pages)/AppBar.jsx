@@ -18,8 +18,8 @@ import { getSession } from 'next-auth/react';
 import { signOut } from "next-auth/react";
 import { usePathname, redirect, useRouter} from 'next/navigation'
 
-const pages = ['dashboard', 'verify', 'groups'];
-const settings = ['Profile', 'Account', 'Logout'];
+const pages = ['dashboard', 'groups'];
+const settings = ['Logout'];
 
 export default function ResponsiveAppBar() {
     const {palette} = useTheme();
@@ -85,23 +85,17 @@ export default function ResponsiveAppBar() {
                     sx={{display: {xs: 'none', md: 'flex'}, ml: 2, pointerEvents: 'none'}}
                     variant="square"
                 /> */}
-                <Typography
-                    variant="h6"
-                    noWrap
-                    component="a"
-                    href="/"
-                    sx={{
-                        mx: 1,
-                        display: {xs: 'none', md: 'flex'},
-                        fontFamily: 'monospace',
-                        fontWeight: "bold",
-                        letterSpacing: '.3rem',
-                        color: 'primary.main',
-                        textDecoration: 'none',
-                    }}
-                >
-                    ROOMMATE RUMBLE
-                </Typography>
+                <Typography variant="h5" sx={{
+                mx: 4,
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 'bold',
+                fontSize: '1.5rem',
+            }}>
+            ROOMATE RUMBLE
+            </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                     <IconButton
@@ -143,29 +137,6 @@ export default function ResponsiveAppBar() {
                         ))}
                     </Menu>
                 </Box>
-
-                <Avatar
-                    sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}
-                    variant="square"
-                />
-
-                <Typography
-                    variant="h5"
-                    noWrap
-                    component="a"
-                    href="/"
-                    sx={{
-                        mr: 2,
-                        display: {xs: 'flex', md: 'none'},
-                        flexGrow: 1,
-                        fontWeight: "bold",
-                        letterSpacing: '.3rem',
-                        color: 'primary.main',
-                        textDecoration: 'none',
-                    }}
-                >
-                    ROOMMATE RUMBLE
-                </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                     {pages.map((page) => (

@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, CircularProgress, DialogActions, Grid, Paper, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, CircularProgress, DialogActions, Grid, Paper, TextField, Typography } from "@mui/material";
 import React from "react";
 
 interface AddUserProps {
@@ -38,8 +38,16 @@ export default function AddUser({groupId} : AddUserProps) {
                 },
               }}
             >
-        <>
-        </>
+        <Typography sx={{
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            fontWeight: 'bold',
+            fontSize: '1.5rem',
+        }}>
+        Add Users To Your Group
+        </Typography>
         <Autocomplete
             fullWidth
             multiple
@@ -69,7 +77,9 @@ export default function AddUser({groupId} : AddUserProps) {
             sx={{ margin: 1 }}
         />
 
-        <Button 
+        <Button
+        color="primary" 
+        variant="contained"
         onClick={submitButton}
         fullWidth
         >

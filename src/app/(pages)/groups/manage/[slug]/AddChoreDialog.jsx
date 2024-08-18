@@ -1,5 +1,6 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, CircularProgress } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button, CircularProgress, Typography } from '@mui/material';
+import Resizer from "react-image-file-resizer";
 
 const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
     const [selectedFile, setSelectedFile] = React.useState(null);
@@ -22,9 +23,6 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
     const handleFileChange = async (e) => {
         const file = await resizeFile(e.target.files[0]);
         setSelectedFile(file);
-        setIsEdited(true);  // Submit button should be enabled
-        // close dialog
-        handleClose();
     };
 
     return (<Dialog open={open} onClose={handleClose} fullWidth>
@@ -54,6 +52,11 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
                 label="Points"
                 variant="standard"
             />
+            <Typography
+            
+            >
+                Upload A Photo of the Chore
+            </Typography>
             <input type="file" onChange={handleFileChange} />
         </DialogContent>
         {pendingAdd ? (
@@ -65,7 +68,7 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
         ) : (
             <DialogActions>
                 <Button onClick={handleClose}>Cancel</Button>
-                <Button onClick={() => handleSubmit()}>Add Chore</Button>
+                <Button onClick={() => handleSubmit(selectedFile)}>Add Chore</Button>
             </DialogActions>
         )}
     </Dialog> );

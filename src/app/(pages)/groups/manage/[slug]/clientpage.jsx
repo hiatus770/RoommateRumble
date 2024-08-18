@@ -36,6 +36,7 @@ import TextField from '@mui/material/TextField';
 import Leaderboard from './leaderboard';
 import AddUser from './adduser';
 import AddChoreDialog from './AddChoreDialog';
+import { getSession } from "next-auth/react";
 
 
 const ClientPage = ({ groupId }) => {
@@ -138,6 +139,19 @@ export async function POST(request: Request) {
         });
     }
 
+    const getCardBackgroundColor = (status) => {
+        switch (status) {
+            case 'Incomplete':
+                return '#a87b7b'; // Light red for incomplete chores
+            case 'Complete':
+                return '#79937d'; // Light green for complete chores
+            case 'In Progress':
+                return '#c9be7c'; // Light blue for in progress chores    
+            default:
+                return '#000000'; // Default white color
+        }
+    };
+
     const completeChore = (choreObj) => {
         // we have group id (groupId)
         // get username
@@ -179,13 +193,24 @@ export async function POST(request: Request) {
 
                 const scores = JSON.parse(data.scores);
                 // Find the user in the scores json object
-                for (let i = 0; i < scores.length; i++) {
-                    if (scores[i].username === username) {
-                        scores[i].points += choreObj.points;
+                for (let key in scores) {
+                    console.log("KEY: " + key);
+
+                    if (key === username) {
+                        // Interpret 
+                        scores[key] = parseInt(scores[key]) + parseInt(choreObj.points);
                         break;
                     }
                 }
 
+                // for (let i = 0; i < scores.length; i++) {
+                //     if (scores[i].username === username) {
+                //         scores[i].points += choreObj.points;
+                //         break;
+                //     }
+                // }
+
+                console.log("SETTING SCORES " + JSON.stringify(scores));
                 fetch('/api/set_scores', {
                     method: 'POST',
                     headers: {
@@ -209,7 +234,7 @@ export async function POST(request: Request) {
 
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = (base64data) => {
         const groupName = document.getElementById("choreName").value;
         console.log("Group Name: ", groupName);
         const groupDescription = document.getElementById("choreDescription").value;
@@ -231,7 +256,7 @@ export async function POST(request: Request){
             name: groupName,
             description: groupDescription,
             points: groupPoints,
-            image: "nothing yet",
+            image: base64data,
             status: "Incomplete"
         };
 
@@ -248,6 +273,8 @@ export async function POST(request: Request){
             fetchChores();
         }).catch((error) => {
             console.error("Error:", error);
+        }).finally(() => {
+            handleClose();
         });
     }
 
@@ -342,7 +369,7 @@ export async function POST(request: Request) {
                                                             <Button onClick={startDeleting} startIcon={<DeleteIcon />}>
                                                                 Delete
                                                             </Button>
-                                                            <Button onClick={resetGroup} startIcon={<DeleteIcon />}>t
+                                                            <Button onClick={resetGroup} startIcon={<DeleteIcon />}>
                                                                 Reset Group
                                                             </Button>
                                                         </ButtonGroup>
@@ -386,85 +413,85 @@ export async function POST(request: Request) {
                                         </Paper>
 
                                         {choreArr.length === 0 ? (
-                                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'}}>
-                                            <Typography sx={{
-                                                background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
-                                                WebkitBackgroundClip: 'text',
-                                                WebkitTextFillColor: 'transparent',
-                                                fontWeight: 'bold',
-                                                fontSize: '1.5rem'
-                                            }}>
-                                                Add chores to get started!
-                                            </Typography>
-                                        </Box>
+                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                                                <Typography sx={{
+                                                    background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
+                                                    WebkitBackgroundClip: 'text',
+                                                    WebkitTextFillColor: 'transparent',
+                                                    fontWeight: 'bold',
+                                                    fontSize: '1.5rem'
+                                                }}>
+                                                    Add chores to get started!
+                                                </Typography>
+                                            </Box>
                                         ) : (
-                                        choreArr.map((chore) => (
-                                            <Grid item key={chore.id} xs={12} sm={6} md={4} lg={3} sx={{ padding: "0.6vh" }}>
-                                                <Card
-                                                    elevation={2}
-                                                    sx={{
-                                                        height: "calc(50vh - 3*1.2vh - 64px)",
-                                                        minHeight: "350px",
-                                                        borderRadius: "1.2vh",
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                    }}
-                                                >
-                                                    <CardMedia
-                                                        component="img"
+                                            choreArr.map((chore) => (
+                                                <Grid item key={chore.id} xs={12} sm={6} md={4} lg={3} sx={{ padding: "0.6vh" }}>
+                                                    <Card
+                                                        elevation={2}
                                                         sx={{
-                                                            maxWidth: "100%",
-                                                            height: "50%", // set a fixed height for the card image and description typography
-                                                            objectFit: "cover",
-                                                            pointerEvents: 'none'
+                                                            height: "calc(50vh - 3*1.2vh - 64px)",
+                                                            minHeight: "350px",
+                                                            borderRadius: "1.2vh",
+                                                            display: "flex",
+                                                            flexDirection: "column",
                                                         }}
-                                                        image={chore.image}
-                                                        alt={`${chore.name} Profile Image`}
-                                                    />
-                                                    <CardContent sx={{ height: "39%", overflow: "hidden", paddingTop: "2%" }}>
-                                                        <Typography variant="h5" component="div">
-                                                            {chore.name}
-                                                        </Typography>
-                                                        <Typography sx={{ paddingTop: "1%", paddingBottom: "2%" }}>
-                                                            <CustomChip label={chore.status} size="small" />
-                                                            <CustomChip label={`${chore.points} points`} size="small" />
-                                                        </Typography>
-                                                        <Typography variant="body2" color="text.secondary"
-                                                            sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
-                                                            {chore.description}
-                                                        </Typography>
-                                                    </CardContent>
-                                                    <CardActions sx={{ padding: "2%" }}>
-                                                        {chore.status === "Incomplete" ? (
-                                                            <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => startChore(chore)}>
-                                                                Start
-                                                            </Button>
-                                                        ) : (
-
-                                                            chore.status === "In Progress" ? (
-                                                                <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => completeChore(chore)}>
-                                                                    Mark as complete
+                                                    >
+                                                        <CardMedia
+                                                            component="img"
+                                                            sx={{
+                                                                maxWidth: "100%",
+                                                                height: "50%", // set a fixed height for the card image and description typography
+                                                                objectFit: "cover",
+                                                                pointerEvents: 'none'
+                                                            }}
+                                                            image={chore.image}
+                                                            alt={`${chore.name} Profile Image`}
+                                                        />
+                                                        <CardContent sx={{ height: "39%", overflow: "hidden", paddingTop: "2%" }}>
+                                                            <Typography variant="h5" component="div">
+                                                                {chore.name}
+                                                            </Typography>
+                                                            <Typography sx={{ paddingTop: "1%", paddingBottom: "2%" }}>
+                                                                <CustomChip label={chore.status} size="small" style={{backgroundColor:`${getCardBackgroundColor(chore.status)}`}}/>
+                                                                <CustomChip label={`${chore.points} points`} size="small"/>
+                                                            </Typography>
+                                                            <Typography variant="body2" color="text.secondary"
+                                                                sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
+                                                                {chore.description}
+                                                            </Typography>
+                                                        </CardContent>
+                                                        <CardActions sx={{ padding: "2%" }}>
+                                                            {chore.status === "Incomplete" ? (
+                                                                <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => startChore(chore)}>
+                                                                    Start
                                                                 </Button>
                                                             ) : (
-                                                                <Button size="small" sx={{ fontWeight: "bold" }} disabled>
-                                                                    Completed
+
+                                                                chore.status === "In Progress" ? (
+                                                                    <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => completeChore(chore)}>
+                                                                        Mark as complete
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button size="small" sx={{ fontWeight: "bold" }} disabled>
+                                                                        Completed
+                                                                    </Button>
+                                                                )
+
+                                                            )}
+                                                            {
+
+                                                                deleting === 1 &&
+                                                                <Button onClick={() => deleteChore(chore.id)} color="error" size="small" sx={{ fontWeight: "bold" }}>
+                                                                    Delete
                                                                 </Button>
-                                                            )
+                                                            }
 
-                                                        )}
-                                                        {
+                                                        </CardActions>
 
-                                                            deleting === 1 &&
-                                                            <Button onClick={() => deleteChore(chore.id)} color="error" size="small" sx={{ fontWeight: "bold" }}>
-                                                                Delete
-                                                            </Button>
-                                                        }
-
-                                                    </CardActions>
-
-                                                </Card>
-                                            </Grid>
-                                        ))
+                                                    </Card>
+                                                </Grid>
+                                            ))
                                         )}
                                     </Grid>
                                 </Box>
