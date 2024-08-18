@@ -1,4 +1,4 @@
-import { Autocomplete, Button, CircularProgress, DialogActions, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, CircularProgress, DialogActions, Grid, Paper, TextField } from "@mui/material";
 import React from "react";
 
 interface AddUserProps {
@@ -28,9 +28,18 @@ export default function AddUser({groupId} : AddUserProps) {
         }
     }
 
-    return (
+    return (   
+        <Box
+            sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                '& > :not(style)': {
+                    m: 1,
+                },
+              }}
+            >
         <>
-        
+        </>
         <Autocomplete
             fullWidth
             multiple
@@ -59,7 +68,14 @@ export default function AddUser({groupId} : AddUserProps) {
             )}
             sx={{ margin: 1 }}
         />
-        <Button onClick={submitButton}>Add</Button>
-        </>
+
+        <Button 
+        onClick={submitButton}
+        fullWidth
+        >
+            Add
+            </Button>
+
+        </Box> 
     );
 }

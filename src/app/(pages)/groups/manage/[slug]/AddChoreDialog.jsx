@@ -23,6 +23,8 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
         const file = await resizeFile(e.target.files[0]);
         setSelectedFile(file);
         setIsEdited(true);  // Submit button should be enabled
+        // close dialog
+        handleClose();
     };
 
     return (<Dialog open={open} onClose={handleClose} fullWidth>

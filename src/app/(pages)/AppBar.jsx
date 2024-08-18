@@ -80,11 +80,11 @@ export default function ResponsiveAppBar() {
     return (
         <AppBar position="static" elevation={0} sx={{backgroundColor: 'appbar.background'}}>
             <Toolbar disableGutters>
-                <Avatar
+                {/* <Avatar
                     src={`/logo.png`}
                     sx={{display: {xs: 'none', md: 'flex'}, ml: 2, pointerEvents: 'none'}}
                     variant="square"
-                />
+                /> */}
                 <Typography
                     variant="h6"
                     noWrap
@@ -145,7 +145,6 @@ export default function ResponsiveAppBar() {
                 </Box>
 
                 <Avatar
-                    src={`/logo.png`}
                     sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}
                     variant="square"
                 />

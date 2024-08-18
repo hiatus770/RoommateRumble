@@ -52,6 +52,7 @@ export default function Leaderboard({ groupId }: LeaderboardProps) {
 
     useEffect(() => {
         fetchLeaderboardList();
+        fetchLeaderboardList();
     }, []);
 
     return (

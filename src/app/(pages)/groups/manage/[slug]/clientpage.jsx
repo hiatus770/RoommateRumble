@@ -65,9 +65,48 @@ const ClientPage = ({ groupId }) => {
         setOpen(false);
     };
 
+    const resetGroup = () => {
+        fetch("/api/reset_group", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: groupId }),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            console.log("Data: ", data);
+            fetchChores();
+        }).catch((error) => {
+            console.error("Error:", error);
+        });
+    }
+
     const deleteChore = (id) => {
         console.log("Delete Chore: ", id);
+        /*
+        // Receives a group id and chore object
+export async function POST(request: Request) {
+    try { 
+        const { groupId, choreId } = await request.json();
+        */
 
+        fetch("/api/delete_chore", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ groupId: groupId, choreId: id }),
+        }).then((response) => {
+            return response.json();
+        }).then((data) => {
+            console.log("Data: ", data);
+            fetchChores();
+        }).catch((error) => {
+            console.error("Error:", error);
+        }).finally(() => {
+            setDeleting(0);
+        });
     }
 
     const startChore = (choreObj) => {
@@ -276,7 +315,6 @@ export async function POST(request: Request) {
                             choreArr === null ? (
                                 <LinearProgress />
                             ) : (
-
                                 <Box sx={{ display: 'flex', mb: 'calc(64px)' }}>
                                     <Grid container
                                         direction="row"
@@ -303,6 +341,9 @@ export async function POST(request: Request) {
                                                             </Button>
                                                             <Button onClick={startDeleting} startIcon={<DeleteIcon />}>
                                                                 Delete
+                                                            </Button>
+                                                            <Button onClick={resetGroup} startIcon={<DeleteIcon />}>t
+                                                                Reset Group
                                                             </Button>
                                                         </ButtonGroup>
                                                     ) : (
@@ -344,7 +385,20 @@ export async function POST(request: Request) {
                                             </FormControl>
                                         </Paper>
 
-                                        {choreArr.map((chore) => (
+                                        {choreArr.length === 0 ? (
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%'}}>
+                                            <Typography sx={{
+                                                background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
+                                                WebkitBackgroundClip: 'text',
+                                                WebkitTextFillColor: 'transparent',
+                                                fontWeight: 'bold',
+                                                fontSize: '1.5rem'
+                                            }}>
+                                                Add chores to get started!
+                                            </Typography>
+                                        </Box>
+                                        ) : (
+                                        choreArr.map((chore) => (
                                             <Grid item key={chore.id} xs={12} sm={6} md={4} lg={3} sx={{ padding: "0.6vh" }}>
                                                 <Card
                                                     elevation={2}
@@ -410,10 +464,12 @@ export async function POST(request: Request) {
 
                                                 </Card>
                                             </Grid>
-                                        ))}
+                                        ))
+                                        )}
                                     </Grid>
                                 </Box>
                             )
+
                         )}
 
                         {currentTabIndex === 1 && (
