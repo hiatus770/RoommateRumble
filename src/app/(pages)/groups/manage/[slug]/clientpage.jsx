@@ -37,7 +37,7 @@ import Leaderboard from './leaderboard';
 import AddUser from './adduser';
 import AddChoreDialog from './AddChoreDialog';
 import { getSession } from "next-auth/react";
-
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 const ClientPage = ({ groupId }) => {
     const sideBarWidth = 160;  // Width of the sidebar in pixels
@@ -391,7 +391,7 @@ export async function POST(request: Request) {
                                                             <Button onClick={startDeleting} startIcon={<DeleteIcon />}>
                                                                 Delete
                                                             </Button>
-                                                            <Button onClick={resetGroup} startIcon={<DeleteIcon />}>
+                                                            <Button onClick={resetGroup} startIcon={<RestartAltIcon />}>
                                                                 Reset Group
                                                             </Button>
                                                         </ButtonGroup>
