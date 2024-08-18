@@ -94,7 +94,7 @@ export default function ResponsiveAppBar() {
                 fontWeight: 'bold',
                 fontSize: '1.5rem',
             }}>
-            ROOMATE RUMBLE
+            ROOMMATE RUMBLE
             </Typography>
 
                 <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
