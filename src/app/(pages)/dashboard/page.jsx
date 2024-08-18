@@ -267,17 +267,17 @@ const { username } = await request.json();
                                     </CardContent>
                                     <CardActions sx={{ padding: "2%" }}>
                                         {chore.status === "Incomplete" ? (
-                                            <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => startChore(chore)}>
+                                            <Button size="large" sx={{ fontWeight: "bold" }} onClick={() => startChore(chore)}>
                                                 Start
                                             </Button>
                                         ) : (
  
                                             chore.status === "In Progress" ? (
-                                                <Button size="small" sx={{ fontWeight: "bold" }} onClick={() => completeChore(chore)}>
+                                                <Button size="large" sx={{ fontWeight: "bold" }} onClick={() => completeChore(chore)}>
                                                     Mark as complete
                                                 </Button>
                                             ) : (
-                                                <Button size="small" sx={{ fontWeight: "bold", ml: 0.7 }} disabled>
+                                                <Button size="large" sx={{ fontWeight: "bold" }} disabled>
                                                     Completed
                                                 </Button>
                                             )
