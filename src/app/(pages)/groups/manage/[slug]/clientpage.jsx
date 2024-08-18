@@ -234,29 +234,39 @@ export async function POST(request: Request) {
 
     }
 
-    const handleSubmit = (base64data) => {
-        const groupName = document.getElementById("choreName").value;
-        console.log("Group Name: ", groupName);
-        const groupDescription = document.getElementById("choreDescription").value;
-        console.log("Group Description: ", groupDescription);
-        const groupPoints = document.getElementById("chorePoints").value;
-        console.log("Group Points: ", groupPoints);
-        //        const response = await sql`INSERT INTO table_${id} (name, description, date, status, points, image) VALUES (${choreObj.name}, ${choreObj.description}, ${dateUnix}, ${choreObj.status}, ${choreObj.points}, ${choreObj.image})`;
-        /*
-        
-// localhost:3000/api/add_chore
+    const convertImageToBase64 = (url) => {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    resolve(reader.result);
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.onerror = function () {
+                reject(new Error('Failed to load image'));
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        });
+    };
 
-// Receives a group id and chore object
-export async function POST(request: Request){
-    try { 
-        const { id, choreObj } = await request.json();
-        */
+const handleSubmit = (base64data) => {
+    const groupName = document.getElementById("choreName").value;
+    console.log("Group Name: ", groupName);
+    const groupDescription = document.getElementById("choreDescription").value;
+    console.log("Group Description: ", groupDescription);
+    const groupPoints = document.getElementById("chorePoints").value;
+    console.log("Group Points: ", groupPoints);
 
+    const createChore = (image) => {
         const newChore = {
             name: groupName,
             description: groupDescription,
             points: groupPoints,
-            image: base64data,
+            image: image,
             status: "Incomplete"
         };
 
@@ -276,7 +286,19 @@ export async function POST(request: Request){
         }).finally(() => {
             handleClose();
         });
+    };
+
+    if (base64data) {
+        createChore(base64data);
+    } else {
+        convertImageToBase64("/background.png").then((defaultImage) => {
+            console.log("Default Image: ", defaultImage);
+            createChore(defaultImage);
+        }).catch((error) => {
+            console.error('Error converting default image to base64:', error);
+        });
     }
+};
 
     /*
     
@@ -449,12 +471,12 @@ export async function POST(request: Request) {
                                                             alt={`${chore.name} Profile Image`}
                                                         />
                                                         <CardContent sx={{ height: "39%", overflow: "hidden", paddingTop: "2%" }}>
+                                                            <Typography sx={{ paddingTop: "1%", paddingBottom: "2%", ml: -0.5 }}>
+                                                                <CustomChip label={chore.status} size="small" style={{ backgroundColor: `${getCardBackgroundColor(chore.status)}` }} />
+                                                                <CustomChip label={`${chore.points} points`} size="small" />
+                                                            </Typography>
                                                             <Typography variant="h5" component="div">
                                                                 {chore.name}
-                                                            </Typography>
-                                                            <Typography sx={{ paddingTop: "1%", paddingBottom: "2%" }}>
-                                                                <CustomChip label={chore.status} size="small" style={{backgroundColor:`${getCardBackgroundColor(chore.status)}`}}/>
-                                                                <CustomChip label={`${chore.points} points`} size="small"/>
                                                             </Typography>
                                                             <Typography variant="body2" color="text.secondary"
                                                                 sx={{ textOverflow: "ellipsis", overflow: "hidden" }}>
@@ -473,7 +495,7 @@ export async function POST(request: Request) {
                                                                         Mark as complete
                                                                     </Button>
                                                                 ) : (
-                                                                    <Button size="small" sx={{ fontWeight: "bold" }} disabled>
+                                                                    <Button size="small" sx={{ fontWeight: "bold", ml: 0.7 }} disabled>
                                                                         Completed
                                                                     </Button>
                                                                 )

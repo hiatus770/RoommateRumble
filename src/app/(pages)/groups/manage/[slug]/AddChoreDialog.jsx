@@ -26,9 +26,17 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
     };
 
     return (<Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>Add Chore</DialogTitle>
+        <DialogTitle align="center" variant="h5" sx={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center',
+                background: 'linear-gradient(0deg, #8FBCBB 40%, #5E81AC 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 'bold',
+            }}>Add Chore</DialogTitle>
         <DialogContent>
-            <DialogContentText>
+            <DialogContentText sx={{
+                display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white', fontWeight: 'bold'
+            }}>
                 Enter the details of the new chore.
             </DialogContentText>
             <TextField
@@ -52,12 +60,16 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
                 label="Points"
                 variant="standard"
             />
-            <Typography
-
+            <Typography sx={{
+                mt: 2.5,
+                mb: 1,
+                fontSize: 16,
+                fontWeight: "bold"
+            }}
             >
                 Upload A Photo of the Chore
             </Typography>
-            <input type="file" onChange={handleFileChange} />
+            <input type="file" onChange={handleFileChange}/>
         </DialogContent>
         {pendingAdd ? (
             <DialogActions>
@@ -68,7 +80,7 @@ const AddChoreDialog = ({ open, handleClose, handleSubmit, pendingAdd }) => {
         ) : (
             <DialogActions>
                 <Button onClick={handleClose} color="primary" variant="contained">Cancel</Button>
-                <Button onClick={() => handleSubmit(selectedFile)}>Add Chore</Button>
+                <Button onClick={() => handleSubmit(selectedFile) } color="primary" variant="contained">Add Chore</Button>
             </DialogActions>
         )}
     </Dialog> );
